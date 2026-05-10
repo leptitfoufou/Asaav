@@ -5,12 +5,13 @@ require("./database/init");
 const registrationsRoutes = require("./routes/registrations");
 const app = express();
 const eventsRoutes = require("./routes/events");
+const membersRoutes = require("./routes/members");
 
 app.use(cors());
 app.use(express.json());
 app.use("/events", eventsRoutes);
 app.use("/registrations", registrationsRoutes);
-
+app.use("/members", membersRoutes);
 
 app.get("/", (req, res) => {
   res.send("ASAAV API fonctionne");

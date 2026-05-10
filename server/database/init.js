@@ -29,4 +29,23 @@ db.serialize(() => {
 `);
 
 console.log("Table event_registrations créée");
+
+db.run(`
+  CREATE TABLE IF NOT EXISTS members (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    firstname TEXT NOT NULL,
+    lastname TEXT NOT NULL,
+    email TEXT NOT NULL,
+    phone TEXT,
+    member_type TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )
+`);
+
+console.log("Table members créée");
+
+
+
+
+
 });
