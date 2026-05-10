@@ -45,7 +45,18 @@ db.run(`
 console.log("Table members créée");
 
 
+db.run(`
+  CREATE TABLE IF NOT EXISTS partners (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    website TEXT,
+    logo TEXT,
+    description TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )
+`);
 
+console.log("Table partners créée");
 
 
 });
