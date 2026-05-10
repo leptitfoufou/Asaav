@@ -16,7 +16,7 @@ router.get("/", (req, res) => {
 
 
 router.post("/", (req, res) => {
-  const { title, description, event_date, location } = req.body;
+  const { title, description, event_date, location, image } = req.body;
 
   if (!title || !event_date || !location) {
     return res.status(400).json({
@@ -25,11 +25,11 @@ router.post("/", (req, res) => {
   }
 
   const sql = `
-    INSERT INTO events (title, description, event_date, location)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO events (title, description, event_date, location, image)
+    VALUES (?, ?, ?, ?, ?)
   `;
 
-  db.run(sql, [title, description, event_date, location], function (err) {
+  db.run(sql, [title, description, event_date, location, image], function (err) {
     if (err) {
       return res.status(500).json({
         error: err.message
@@ -43,7 +43,8 @@ router.post("/", (req, res) => {
         title,
         description,
         event_date,
-        location
+        location,
+        image
       }
     });
   });
@@ -55,7 +56,7 @@ router.post("/", (req, res) => {
 
 router.put("/:id", (req, res) => {
   const { id } = req.params;
-  const { title, description, event_date, location } = req.body;
+  const { title, description, event_date, location, image } = req.body;
 
   if (!title || !event_date || !location) {
     return res.status(400).json({
@@ -65,11 +66,11 @@ router.put("/:id", (req, res) => {
 
   const sql = `
     UPDATE events
-    SET title = ?, description = ?, event_date = ?, location = ?
+    SET title = ?, description = ?, event_date = ?, location = ?, image = ?
     WHERE id = ?
   `;
 
-  db.run(sql, [title, description, event_date, location, id], function (err) {
+  db.run(sql, [title, description, event_date, location, image, id], function (err) {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
@@ -85,7 +86,8 @@ router.put("/:id", (req, res) => {
         title,
         description,
         event_date,
-        location
+        location,
+        image
       }
     });
   });

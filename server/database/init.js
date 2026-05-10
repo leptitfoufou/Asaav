@@ -13,6 +13,11 @@ db.serialize(() => {
   `);
 
   console.log("Table events créée");
+  db.run(`ALTER TABLE events ADD COLUMN image TEXT`, (err) => {
+  if (err && !err.message.includes("duplicate column name")) {
+    console.error("Erreur ajout colonne image :", err.message);
+  }
+});
 
 
   db.run(`
