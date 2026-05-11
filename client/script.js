@@ -129,3 +129,86 @@ const sortedEvents = events
 }
 
 loadEventsPage();
+
+
+
+
+async function loadEventDetail() {
+  const title = document.getElementById("event-title");
+
+  if (!title) return;
+
+  const params = new URLSearchParams(window.location.search);
+  const eventId = params.get("id");
+
+  if (!eventId) {
+    title.textContent = "Événement introuvable";
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://localhost:3000/events/${eventId}`);
+    const event = await response.json();
+
+    document.getElementById("event-title").textContent = event.title;
+    document.getElementById("event-description").textContent = event.description;
+    document.getElementById("event-date").textContent = event.event_date;
+    document.getElementById("event-location").textContent = event.location;
+
+    const image = document.getElementById("event-image");
+    image.src = event.image || "images/events/default.jpg";
+    image.alt = event.title;
+
+  } catch (error) {
+    title.textContent = "Impossible de charger l’événement";
+  }
+}
+
+loadEventDetail();
+
+
+
+
+
+
+const registrationForm = document.getElementById("registration-form");
+
+if (registrationForm) {
+  registrationForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const params = new URLSearchParams(window.location.search);
+    const eventId = params.get("id");
+
+    const registrationData = {
+      event_id: eventId,
+      firstname: document.getElementById("firstname").value,
+      lastname: document.getElementById("lastname").value,
+      email: document.getElementById("email").value,
+      phone: document.getElementById("phone").value
+    };
+
+    try {
+      const response = await fetch("http://localhost:3000/registrations", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(registrationData)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.error || "Erreur lors de l’inscription");
+        return;
+      }
+
+      alert("Inscription envoyée avec succès !");
+      registrationForm.reset();
+
+    } catch (error) {
+      alert("Impossible d’envoyer l’inscription.");
+    }
+  });
+}

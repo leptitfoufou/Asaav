@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Événement | ASAAV</title>
+
+  <link rel="stylesheet" href="style.css" />
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+
+    <nav class="navbar">
+
+      <div class="logo">
+        <a href="index.html">
+            <img src="/client/images/logo-asaav-no-back copie.png" alt="Logo ASAAV">
+        </a>
+      </div>
+
+      <ul class="nav-links">
+
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="events.html">Événements</a></li>
+        <li><a href="members.html">Devenir membre</a></li>
+        <li><a href="partners.html">Partenaires</a></li>
+        <li><a href="gallery.html">Galerie</a></li>
+        <li><a href="about.html">À propos</a></li>
+        <li><a href="contact.html">Contact</a></li>
+
+      </ul>
+
+      <div class="member-btn">
+        <a href="members-acces.html">
+          <button>
+            <i class="fa-regular fa-user"></i>
+            Espace membre
+          </button>
+        </a>
+      </div>
+
+      <div class="burger">
+        <i class="fa-solid fa-bars"></i>
+      </div>
+
+    </nav>
+
+    <div class="mobile-menu">
+
+      <a href="index.html">Accueil</a>
+      <a href="events.html">Événements</a>
+      <a href="members.html">Devenir membre</a>
+      <a href="partners.html">Partenaires</a>
+      <a href="gallery.html">Galerie</a>
+      <a href="about.html">À propos</a>
+      <a href="contact.html">Contact</a>
+
+      <a href="members-acces.html">
+        <button>
+          <i class="fa-regular fa-user"></i>
+          Espace membre
+        </button>
+      </a>
+
+    </div>
+
+  </header>
+
+
+
+
+
+  <!-- EVENT DETAIL -->
+  <section class="event-detail">
+
+    <div class="event-detail-image">
+      <img id="event-image" src="" alt="">
+    </div>
+
+    <div class="event-detail-content">
+
+      <span class="event-badge">Événement ASAAV</span>
+
+      <h1 id="event-title"></h1>
+
+      <p id="event-description"></p>
+
+      <div class="event-detail-meta">
+
+        <div>
+          <i class="fa-regular fa-calendar"></i>
+          <span id="event-date"></span>
+        </div>
+
+        <div>
+          <i class="fa-solid fa-location-dot"></i>
+          <span id="event-location"></span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+
+
+  <!-- REGISTRATION -->
+  <section class="registration-section">
+
+    <div class="registration-container">
+
+      <div class="registration-info">
+        <span>Inscription</span>
+
+        <h2>Participer à cette sortie</h2>
+
+        <p>
+          Remplissez le formulaire ci-dessous pour vous inscrire
+          à cet événement ASAAV.
+        </p>
+      </div>
+
+      <form id="registration-form" class="registration-form">
+
+        <input
+          type="text"
+          id="firstname"
+          placeholder="Prénom"
+          required
+        >
+
+        <input
+          type="text"
+          id="lastname"
+          placeholder="Nom"
+          required
+        >
+
+        <input
+          type="email"
+          id="email"
+          placeholder="Adresse email"
+          required
+        >
+
+        <input
+          type="text"
+          id="phone"
+          placeholder="Téléphone"
+        >
+
+        <button type="submit">
+          S’inscrire à l’événement
+        </button>
+
+      </form>
+
+    </div>
+
+  </section>
+
+
+
+
+
+  <!-- FOOTER -->
+  <footer class="footer">
+
+    <div class="footer-content">
+
+      <div class="footer-brand">
+        <img src="/client/images/logo-asaav-no-back copie.png" alt="Logo ASAAV">
+
+        <p>
+          Association Sportive Automobile des Alpes Vaudoises.
+          Passion, sorties et convivialité automobile en Suisse.
+        </p>
+      </div>
+
+      <div class="footer-links">
+        <h3>Navigation</h3>
+
+        <a href="index.html">Accueil</a>
+        <a href="events.html">Événements</a>
+        <a href="members.html">Devenir membre</a>
+        <a href="partners.html">Partenaires</a>
+      </div>
+
+      <div class="footer-links">
+        <h3>Club</h3>
+
+        <a href="gallery.html">Galerie</a>
+        <a href="about.html">À propos</a>
+        <a href="contact.html">Contact</a>
+        <a href="members-acces.html">Espace membre</a>
+      </div>
+
+      <div class="footer-contact">
+        <h3>Contact</h3>
+
+        <p>
+          <i class="fa-solid fa-location-dot"></i>
+          Alpes Vaudoises, Suisse
+        </p>
+
+        <p>
+          <i class="fa-solid fa-envelope"></i>
+          info@asaav.ch
+        </p>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 ASAAV. Tous droits réservés.</p>
+    </div>
+
+  </footer>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
