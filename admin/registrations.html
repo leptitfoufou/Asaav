@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inscriptions | Admin ASAAV</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="admin-logo">ASAAV</div>
+
+    <nav>
+      <a href="index.html">Dashboard</a>
+      <a href="events.html">Événements</a>
+      <a href="registrations.html" class="active">Inscriptions</a>
+      <a href="members.html">Membres</a>
+      <a href="partners.html">Partenaires</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="menu-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <h1>Inscriptions</h1>
+    </header>
+
+    <section class="admin-section">
+      <div class="section-header">
+        <div>
+          <h2>Liste des inscrits</h2>
+          <p>Sélectionnez une sortie pour voir, modifier ou imprimer les inscriptions.</p>
+        </div>
+
+        
+        <button class="admin-primary-btn" id="toggle-registration-form">
+  + Ajouter une inscription
+</button>
+<button class="admin-primary-btn" onclick="window.print()">
+          Imprimer
+        </button>
+      </div>
+
+      <div class="admin-form-card">
+        <h3>Choisir une sortie</h3>
+
+        <select id="registration-event-select" class="admin-select">
+          <option value="">Sélectionner un événement</option>
+        </select>
+      </div>
+      
+        <h2 id="print-event-title" class="print-title"></h2>
+
+      <div class="admin-table-wrapper">
+        <table class="admin-table">
+
+          <thead>
+            <tr>
+              <th>Prénom</th>
+              <th>Nom</th>
+              <th>Email</th>
+              <th>Téléphone</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody id="admin-registrations-list">
+            <!-- Inscriptions chargées ici -->
+          </tbody>
+        </table>
+      </div>
+      <div class="admin-form-card hidden" id="registration-form-card">
+  <h3>Ajouter une inscription</h3>
+
+  <form id="create-registration-form">
+    <input type="text" id="registration-firstname" placeholder="Prénom" required>
+    <input type="text" id="registration-lastname" placeholder="Nom" required>
+    <input type="email" id="registration-email" placeholder="Email" required>
+    <input type="text" id="registration-phone" placeholder="Téléphone">
+
+    <button type="submit">Ajouter l’inscription</button>
+  </form>
+</div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

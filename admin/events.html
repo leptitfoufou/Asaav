@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Événements | Admin ASAAV</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="admin-logo">ASAAV</div>
+
+    <nav>
+      <a href="index.html">Dashboard</a>
+      <a href="events.html" class="active">Événements</a>
+      <a href="registrations.html">Inscriptions</a>
+      <a href="members.html">Membres</a>
+      <a href="partners.html">Partenaires</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="menu-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <h1>Événements</h1>
+    </header>
+
+    <section class="admin-section">
+      <div class="section-header">
+        <div>
+          <h2>Gestion des sorties</h2>
+          <p>Créez, modifiez et supprimez les événements ASAAV.</p>
+        </div>
+
+        <button class="admin-primary-btn" id="toggle-event-form">
+          + Créer une sortie
+        </button>
+      </div>
+
+      <div class="admin-table-wrapper">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Titre</th>
+              <th>Date</th>
+              <th>Lieu</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody id="admin-events-list">
+            <!-- Les événements seront chargés ici -->
+          </tbody>
+        </table>
+      </div>
+      <div class="admin-form-card hidden" id="event-form-card">
+    <h3 id="event-form-title">Créer une sortie</h3>
+  <form id="create-event-form">
+    <input type="text" id="event-title-input" placeholder="Titre" required>
+    <input type="date" id="event-date-input" required>
+    <input type="text" id="event-location-input" placeholder="Lieu" required>
+    <input type="file" id="event-image-input" accept="image/*">
+    <textarea id="event-description-input" placeholder="Description"></textarea>
+
+    <button type="submit">Créer la sortie</button>
+  </form>
+</div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
