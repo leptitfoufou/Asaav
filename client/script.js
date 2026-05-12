@@ -212,3 +212,134 @@ if (registrationForm) {
     }
   });
 }
+
+
+async function loadMembersCount() {
+
+  const membersCount = document.getElementById(
+    "members-total-count"
+  );
+
+  if (!membersCount) return;
+
+  try {
+
+    const response = await fetch(
+      "http://localhost:3000/members"
+    );
+
+    const members = await response.json();
+
+    membersCount.textContent =
+      `${members.length}`;
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+}
+
+loadMembersCount();
+
+
+
+
+
+const memberRequestForm = document.getElementById(
+  "member-request-form"
+);
+
+if (memberRequestForm) {
+
+  memberRequestForm.addEventListener("submit", async (e) => {
+
+    e.preventDefault();
+
+    const memberData = {
+      firstname:
+        document.getElementById("member-firstname").value,
+
+      lastname:
+        document.getElementById("member-lastname").value,
+
+      email:
+        document.getElementById("member-email").value,
+
+      phone:
+        document.getElementById("member-phone").value,
+
+      member_type:
+        document.getElementById("member-type").value
+    };
+
+    try {
+
+      const response = await fetch(
+        "http://localhost:3000/members",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify(memberData)
+        }
+      );
+
+      if (!response.ok) {
+        alert("Erreur lors de l’envoi");
+        return;
+      }
+
+      alert("Demande envoyée avec succès !");
+
+      memberRequestForm.reset();
+
+      loadMembersCount();
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert("Erreur serveur");
+
+    }
+
+  });
+
+}
+
+
+
+async function loadPartnersPage() {
+  const container = document.getElementById("partners-page-grid");
+
+  if (!container) return;
+
+  try {
+    const response = await fetch("http://localhost:3000/partners");
+    const partners = await response.json();
+
+    container.innerHTML = partners.map(partner => `
+      <article class="partner-page-card">
+        ${partner.logo ? `<img src="${partner.logo}" alt="${partner.name}">` : ""}
+
+        <h3>${partner.name}</h3>
+
+
+        ${partner.website ? `
+          <a href="${partner.website}" target="_blank">
+            Voir le site
+          </a>
+        ` : ""}
+      </article>
+    `).join("");
+
+  } catch (error) {
+    container.innerHTML = "<p>Impossible de charger les partenaires.</p>";
+  }
+}
+
+loadPartnersPage();
