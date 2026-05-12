@@ -1387,9 +1387,12 @@ if (galleryUploadForm) {
     const files = document.getElementById(
       "gallery-images"
     ).files;
+    const archiveFile = document.getElementById(
+      "gallery-archive"
+    ).files[0];
 
-    if (!eventId || files.length === 0) {
-      alert("Sélectionnez une sortie et des images.");
+    if (!eventId || (files.length === 0 && !archiveFile)) {
+      alert("Sélectionnez une sortie et au moins une image ou une archive ZIP.");
       return;
     }
 
@@ -1429,11 +1432,38 @@ if (galleryUploadForm) {
 
       }
 
-      alert("Photos ajoutées avec succès");
+      if (archiveFile) {
+  const archiveData = new FormData();
+  archiveData.append("image", archiveFile);
+
+  const archiveUploadResponse = await fetch(
+    "http://localhost:3000/upload",
+    {
+      method: "POST",
+      body: archiveData
+    }
+  );
+
+  const archiveUploadResult = await archiveUploadResponse.json();
+
+  await fetch("http://localhost:3000/gallery/archives", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      event_id: eventId,
+      archive_file: archiveUploadResult.imagePath
+    })
+  });
+}
+
+
+      alert("Photos / archive ajoutées avec succès");
 
       galleryUploadForm.reset();
 
-      loadGalleryPhotos();
+      loadGalleryPhotos(eventId);
 
     } catch (error) {
 

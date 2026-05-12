@@ -112,6 +112,18 @@ console.log("Table gallery_photos créée");
 
 
 
+db.run(`
+  CREATE TABLE IF NOT EXISTS gallery_archives (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_id INTEGER NOT NULL,
+    archive_file TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (event_id) REFERENCES events(id)
+  )
+`);
+
+console.log("Table gallery_archives créée");
+
 
 
 });
