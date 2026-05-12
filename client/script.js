@@ -343,3 +343,293 @@ async function loadPartnersPage() {
 }
 
 loadPartnersPage();
+
+
+
+
+
+const contactForm = document.getElementById("contact-form");
+
+if (contactForm) {
+  contactForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const contactData = {
+      name: document.getElementById("contact-name").value,
+      email: document.getElementById("contact-email").value,
+      subject: document.getElementById("contact-subject").value,
+      message: document.getElementById("contact-message").value
+    };
+
+    const response = await fetch("http://localhost:3000/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(contactData)
+    });
+
+    if (!response.ok) {
+      alert("Erreur lors de l’envoi du message");
+      return;
+    }
+
+    alert("Message envoyé avec succès !");
+    contactForm.reset();
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+async function loadGalleryEvents() {
+  const recentContainer = document.getElementById("gallery-recent-grid");
+  const archiveContainer = document.getElementById("gallery-archive-list");
+
+  if (!recentContainer || !archiveContainer) return;
+
+  try {
+    const response = await fetch("http://localhost:3000/gallery");
+    const photos = await response.json();
+
+    const galleries = {};
+
+    photos.forEach(photo => {
+      if (!galleries[photo.event_id]) {
+        galleries[photo.event_id] = {
+          event_id: photo.event_id,
+          title: photo.title,
+          event_date: photo.event_date,
+          image: photo.image,
+          count: 1
+        };
+      } else {
+        galleries[photo.event_id].count++;
+      }
+    });
+
+    const galleryList = Object.values(galleries);
+
+    const today = new Date();
+    const twoYearsAgo = new Date();
+    twoYearsAgo.setFullYear(today.getFullYear() - 2);
+
+    const recentGalleries = galleryList.filter(gallery =>
+      new Date(gallery.event_date) >= twoYearsAgo
+    );
+
+    const archiveGalleries = galleryList.filter(gallery =>
+      new Date(gallery.event_date) < twoYearsAgo
+    );
+
+    recentContainer.innerHTML = recentGalleries.map(gallery => `
+      <article class="gallery-event-card">
+        <img src="http://localhost:3000/${gallery.image}" alt="${gallery.title}">
+
+        <div class="gallery-event-content">
+          <h3>${gallery.title}</h3>
+          <p>${gallery.event_date} · ${gallery.count} photo(s)</p>
+
+          <a href="gallery-event.html?id=${gallery.event_id}">
+            Voir les photos
+          </a>
+        </div>
+      </article>
+    `).join("");
+
+    archiveContainer.innerHTML = archiveGalleries.map(gallery => `
+      <div class="gallery-archive-item">
+        <div>
+          <h3>${gallery.title}</h3>
+          <p>${gallery.event_date} · ${gallery.count} photo(s)</p>
+        </div>
+
+        <a href="gallery-event.html?id=${gallery.event_id}">
+          Voir les photos
+        </a>
+      </div>
+    `).join("");
+
+    if (recentGalleries.length === 0) {
+      recentContainer.innerHTML = "<p>Aucune galerie récente pour le moment.</p>";
+    }
+
+    if (archiveGalleries.length === 0) {
+      archiveContainer.innerHTML = "<p>Aucune ancienne sortie pour le moment.</p>";
+    }
+
+  } catch (error) {
+    recentContainer.innerHTML = "<p>Impossible de charger les galeries.</p>";
+  }
+}
+
+loadGalleryEvents();
+
+
+
+
+async function loadGalleryEventDetail() {
+  const container = document.getElementById("gallery-detail-grid");
+
+  if (!container) return;
+
+  const params = new URLSearchParams(window.location.search);
+  const eventId = params.get("id");
+
+  if (!eventId) {
+    container.innerHTML = "<p>Galerie introuvable.</p>";
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://localhost:3000/gallery/${eventId}`);
+    const photos = await response.json();
+
+    if (photos.length === 0) {
+      container.innerHTML = "<p>Aucune photo disponible pour cette sortie.</p>";
+      return;
+    }
+
+    document.getElementById("gallery-event-title").textContent =
+      photos[0].title || "Photos de la sortie";
+
+    document.getElementById("gallery-event-date").textContent =
+      photos[0].event_date || "";
+
+        galleryImages = photos.map(
+    photo => `http://localhost:3000/${photo.image}`
+  );
+
+    container.innerHTML = photos.map(photo => `
+      <img
+        src="http://localhost:3000/${photo.image}"
+        alt="Photo ASAAV"
+        onclick="openLightbox('http://localhost:3000/${photo.image}')"
+      >
+    `).join("");
+
+  } catch (error) {
+    container.innerHTML = "<p>Impossible de charger les photos.</p>";
+  }
+}
+
+loadGalleryEventDetail();
+
+
+
+let galleryImages = [];
+let currentImageIndex = 0;
+
+function openLightbox(imageSrc) {
+
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightbox-img");
+
+  if (!lightbox || !lightboxImg) return;
+
+  currentImageIndex = galleryImages.indexOf(imageSrc);
+
+  lightboxImg.src = imageSrc;
+
+  lightbox.classList.add("active");
+}
+
+function showNextImage() {
+
+  if (galleryImages.length === 0) return;
+
+  currentImageIndex++;
+
+  if (currentImageIndex >= galleryImages.length) {
+    currentImageIndex = 0;
+  }
+
+  document.getElementById("lightbox-img").src =
+    galleryImages[currentImageIndex];
+}
+
+function showPrevImage() {
+
+  if (galleryImages.length === 0) return;
+
+  currentImageIndex--;
+
+  if (currentImageIndex < 0) {
+    currentImageIndex = galleryImages.length - 1;
+  }
+
+  document.getElementById("lightbox-img").src =
+    galleryImages[currentImageIndex];
+}
+
+const lightbox = document.getElementById("lightbox");
+const lightboxClose = document.querySelector(".lightbox-close");
+const lightboxNext = document.getElementById("lightbox-next");
+const lightboxPrev = document.getElementById("lightbox-prev");
+
+if (lightbox && lightboxClose) {
+
+  lightboxClose.addEventListener("click", () => {
+    lightbox.classList.remove("active");
+  });
+
+  lightbox.addEventListener("click", (e) => {
+    if (e.target === lightbox) {
+      lightbox.classList.remove("active");
+    }
+  });
+
+  if (lightboxNext) {
+    lightboxNext.addEventListener("click", showNextImage);
+  }
+
+  if (lightboxPrev) {
+    lightboxPrev.addEventListener("click", showPrevImage);
+  }
+
+  document.addEventListener("keydown", (e) => {
+
+    if (!lightbox.classList.contains("active")) return;
+
+    if (e.key === "ArrowRight") {
+      showNextImage();
+    }
+
+    if (e.key === "ArrowLeft") {
+      showPrevImage();
+    }
+
+    if (e.key === "Escape") {
+      lightbox.classList.remove("active");
+    }
+
+  });
+
+}

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>ASAAV - Galerie</title>
+
+  <link rel="stylesheet" href="style.css" />
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+</head>
+
+<body>
+
+  <header class="header">
+
+    <nav class="navbar">
+
+      <div class="logo">
+        <img src="/client/images/logo-asaav-no-back copie.png" alt="Logo Asaav">
+      </div>
+
+      <ul class="nav-links">
+
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="events.html">Événements</a></li>
+        <li><a href="members.html">Devenir membre</a></li>
+        <li><a href="partners.html">Partenaires</a></li>
+        <li><a href="gallery.html">Galerie</a></li>
+        <li><a href="about.html">À propos</a></li>
+        <li><a href="contact.html">Contact</a></li>
+
+      </ul>
+
+      <div class="member-btn">
+        <a href="members-acces.html">
+            <button>
+            <i class="fa-regular fa-user"></i>
+            Espace membre
+            </button>
+        </a>
+      </div>
+
+      <div class="burger">
+        <i class="fa-solid fa-bars"></i>
+      </div>
+
+    </nav>
+
+
+
+    <div class="mobile-menu">
+        <a href="index.html">Accueil</a>
+        <a href="events.html">Événements</a>
+        <a href="members.html">Devenir membre</a>
+        <a href="partners.html">Partenaires</a>
+        <a href="gallery.html">Galerie</a>
+        <a href="about.html">À propos</a>
+        <a href="contact.html">Contact</a>
+
+        <a href="members-acces.html">
+            <button>
+                <i class="fa-regular fa-user"></i>
+                Espace membre
+            </button>
+        </a>
+    </div>
+
+
+
+  </header>
+
+
+
+
+
+  <section class="gallery-detail-section">
+    <div class="section-title">
+      <span>Galerie ASAAV</span>
+      <h2 id="gallery-event-title">Photos de la sortie</h2>
+      <p id="gallery-event-date"></p>
+    </div>
+
+    <div id="gallery-detail-grid" class="gallery-detail-grid">
+      <!-- Photos chargées ici -->
+    </div>
+  </section>
+
+
+
+
+
+
+  
+<!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+
+            <div class="footer-brand">
+            <img src="images/logo-asaav-no-back copie.png" alt="Logo ASAAV">
+            <p>
+                Association Sportive Automobile des Alpes Vaudoises.
+                Passion, sorties et convivialité automobile en Suisse.
+            </p>
+            </div>
+
+            <div class="footer-links">
+            <h3>Navigation</h3>
+            <a href="index.html">Accueil</a>
+            <a href="events.html">Événements</a>
+            <a href="members.html">Devenir membre</a>
+            <a href="partners.html">Partenaires</a>
+            </div>
+
+            <div class="footer-links">
+            <h3>Club</h3>
+            <a href="gallery.html">Galerie</a>
+            <a href="about.html">À propos</a>
+            <a href="contact.html">Contact</a>
+            <a href="members-acces.html">Espace membre</a>
+            </div>
+
+            <div class="footer-contact">
+            <h3>Contact</h3>
+            <p><i class="fa-solid fa-location-dot"></i> Alpes Vaudoises, Suisse</p>
+            <p><i class="fa-solid fa-envelope"></i> asaav@bluewin.ch</p>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 ASAAV. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <!-- Fin Footer -->
+     <div class="lightbox" id="lightbox">
+
+        <button class="lightbox-arrow left" id="lightbox-prev">
+            ‹
+        </button>
+
+        <img id="lightbox-img" src="" alt="Photo ASAAV">
+
+        <button class="lightbox-arrow right" id="lightbox-next">
+            ›
+        </button>
+
+        <span class="lightbox-close">&times;</span>
+
+        </div>
+  <script src="script.js"></script>
+
+</body>
+</html>

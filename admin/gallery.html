@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Galerie | Admin ASAAV</title>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <aside class="sidebar">
+    <div class="admin-logo">ASAAV</div>
+
+    <nav>
+      <a href="index.html">Dashboard</a>
+      <a href="events.html">Événements</a>
+      <a href="registrations.html">Inscriptions</a>
+      <a href="members.html">Membres</a>
+      <a href="partners.html">Partenaires</a>
+      <a href="admins.html">Admins</a>
+      <a href="messages.html">Messages</a>
+      <a href="gallery.html" class="active">Galerie</a>
+       <a href=""> 
+        <button class="logout-btn" id="logout-btn"> Déconnexion </button>
+       </a>
+    </nav>
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+      <button class="menu-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <h1>Galerie</h1>
+    </header>
+
+    <section class="admin-section">
+
+      <div class="section-header">
+        <div>
+          <h2>Photos des sorties</h2>
+          <p>Ajoutez des photos liées à une sortie ASAAV.</p>
+        </div>
+      </div>
+
+      <div class="admin-form-card">
+        <h3>Ajouter des photos</h3>
+
+        <form id="gallery-upload-form">
+          <select id="gallery-event-select" class="admin-select" required>
+            <option value="">Sélectionner une sortie</option>
+          </select>
+
+          <input
+            type="file"
+            id="gallery-images"
+            accept="image/*"
+            multiple
+            required
+          >
+
+          <button type="submit">
+            Ajouter les photos
+          </button>
+        </form>
+      </div>
+
+      <div id="admin-gallery-grid" class="admin-gallery-grid">
+        <!-- photos chargées ici -->
+      </div>
+
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

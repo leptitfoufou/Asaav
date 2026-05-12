@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Messages | Admin ASAAV</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="admin-logo">ASAAV</div>
+
+    <nav>
+      <a href="index.html">Dashboard</a>
+      <a href="events.html">Événements</a>
+      <a href="registrations.html">Inscriptions</a>
+      <a href="members.html">Membres</a>
+      <a href="partners.html">Partenaires</a>
+      <a href="admins.html">Admins</a>
+      <a href="messages.html" class="active">Messages</a>
+      <a href="gallery.html">Galerie</a>
+         <a href="">
+          <button class="logout-btn" id="logout-btn">
+            Déconnexion
+          </button>
+         </a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="menu-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <h1>Messages</h1>
+    </header>
+
+    <section class="admin-section">
+      <div class="section-header">
+        <div>
+          <h2>Messages de contact</h2>
+          <p>Consultez les demandes envoyées depuis le formulaire de contact.</p>
+        </div>
+      </div>
+
+      <div id="admin-messages-list" class="messages-list">
+        <!-- messages chargés ici -->
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -8,7 +8,8 @@ const eventsRoutes = require("./routes/events");
 const membersRoutes = require("./routes/members");
 const partnersRoutes = require("./routes/partners");
 const authRoutes = require("./routes/auth");
-
+const contactRoutes = require("./routes/contact");
+const galleryRoutes = require("./routes/gallery");
 const path = require("path");
 const uploadRoutes = require("./routes/upload");
 
@@ -20,6 +21,8 @@ app.use("/members", membersRoutes);
 app.use("/partners", partnersRoutes);
 app.use("/upload", uploadRoutes);
 app.use("/auth", authRoutes);
+app.use("/contact", contactRoutes);
+app.use("/gallery", galleryRoutes);
 
 app.get("/", (req, res) => {
   res.send("ASAAV API fonctionne");
@@ -35,3 +38,6 @@ app.use(
 app.listen(PORT, () => {
   console.log(`Serveur lancé sur le port ${PORT}`);
 });
+
+
+

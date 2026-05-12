@@ -38,21 +38,31 @@ async function loadDashboardStats() {
       eventsRes,
       registrationsRes,
       membersRes,
-      partnersRes
+      partnersRes,
+      messagesRes
     ] = await Promise.all([
       fetch("http://localhost:3000/events"),
       fetch("http://localhost:3000/registrations"),
       fetch("http://localhost:3000/members"),
-      fetch("http://localhost:3000/partners")
+      fetch("http://localhost:3000/partners"),
+      fetch("http://localhost:3000/contact")
     ]);
 
     const events = await eventsRes.json();
     const registrations = await registrationsRes.json();
     const members = await membersRes.json();
     const partners = await partnersRes.json();
+    const messages = await messagesRes.json();
 
-    document.getElementById("events-count").textContent =
-      events.length;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const upcomingEvents = events.filter(
+      event => new Date(event.event_date) >= today
+    );
+
+document.getElementById("events-count").textContent =
+  upcomingEvents.length;
 
     document.getElementById("registrations-count").textContent =
       registrations.length;
@@ -63,6 +73,9 @@ async function loadDashboardStats() {
     document.getElementById("partners-count").textContent =
       partners.length;
 
+    document.getElementById("messages-count").textContent =
+      messages.length;
+ 
   } catch (error) {
     console.error("Erreur dashboard :", error);
   }
@@ -1138,6 +1151,329 @@ async function deleteAdmin(id) {
     }
 
     loadAdmins();
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+}
+
+
+
+
+
+async function loadContactMessages() {
+
+  const container = document.getElementById(
+    "admin-messages-list"
+  );
+
+  if (!container) return;
+
+  try {
+
+    const response = await fetch(
+      "http://localhost:3000/contact"
+    );
+
+    const messages = await response.json();
+
+    if (messages.length === 0) {
+
+      container.innerHTML = `
+        <p>Aucun message pour le moment.</p>
+      `;
+
+      return;
+    }
+
+    container.innerHTML = messages.map(message => `
+      <article class="message-card">
+
+        <div class="message-card-top">
+
+          <div>
+
+            <h3>${message.subject}</h3>
+
+            <div class="message-meta">
+              <span>${message.name}</span>
+              <span>${message.email}</span>
+              <span>${message.created_at}</span>
+            </div>
+
+          </div>
+
+          <button
+            class="message-delete-btn"
+            onclick="deleteMessage(${message.id})"
+          >
+            Supprimer
+          </button>
+
+        </div>
+
+        <div class="message-content">
+          ${message.message}
+        </div>
+
+      </article>
+    `).join("");
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+}
+
+loadContactMessages();
+
+
+
+
+
+async function deleteMessage(id) {
+
+  const confirmDelete = confirm(
+    "Supprimer ce message ?"
+  );
+
+  if (!confirmDelete) return;
+
+  try {
+
+    const response = await fetch(
+      `http://localhost:3000/contact/${id}`,
+      {
+        method: "DELETE"
+      }
+    );
+
+    if (!response.ok) {
+      alert("Erreur suppression");
+      return;
+    }
+
+    loadContactMessages();
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+}
+
+
+
+
+
+async function loadGalleryEvents() {
+
+  const select = document.getElementById(
+    "gallery-event-select"
+  );
+
+  if (!select) return;
+
+  try {
+
+    const response = await fetch(
+      "http://localhost:3000/events"
+    );
+
+    const events = await response.json();
+
+    select.innerHTML = `
+      <option value="">
+        Sélectionner une sortie
+      </option>
+    `;
+
+    events.forEach(event => {
+
+      select.innerHTML += `
+        <option value="${event.id}">
+          ${event.title}
+        </option>
+      `;
+
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+}
+
+loadGalleryEvents();
+
+
+
+
+async function loadGalleryPhotos(eventId = "") {
+  const container = document.getElementById("admin-gallery-grid");
+
+  if (!container) return;
+
+  if (!eventId) {
+    container.innerHTML = "<p>Sélectionnez une sortie pour voir ses photos.</p>";
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `http://localhost:3000/gallery/${eventId}`
+    );
+
+    const photos = await response.json();
+
+    if (photos.length === 0) {
+      container.innerHTML = "<p>Aucune photo pour cette sortie.</p>";
+      return;
+    }
+
+    container.innerHTML = photos.map(photo => `
+      <article class="admin-gallery-card">
+
+        <img
+          src="http://localhost:3000/${photo.image}"
+          alt="Photo galerie"
+        >
+
+        <div class="admin-gallery-content">
+
+          <button onclick="deleteGalleryPhoto(${photo.id})">
+            Supprimer
+          </button>
+
+        </div>
+
+      </article>
+    `).join("");
+
+  } catch (error) {
+    console.error(error);
+  }
+}
+const galleryEventSelect = document.getElementById("gallery-event-select");
+
+if (galleryEventSelect) {
+  galleryEventSelect.addEventListener("change", (e) => {
+    loadGalleryPhotos(e.target.value);
+  });
+}
+loadGalleryPhotos(eventId);
+
+
+
+
+const galleryUploadForm = document.getElementById(
+  "gallery-upload-form"
+);
+
+if (galleryUploadForm) {
+
+  galleryUploadForm.addEventListener("submit", async (e) => {
+
+    e.preventDefault();
+
+    const eventId = document.getElementById(
+      "gallery-event-select"
+    ).value;
+
+    const files = document.getElementById(
+      "gallery-images"
+    ).files;
+
+    if (!eventId || files.length === 0) {
+      alert("Sélectionnez une sortie et des images.");
+      return;
+    }
+
+    try {
+
+      for (const file of files) {
+
+        const uploadData = new FormData();
+
+        uploadData.append("image", file);
+
+        const uploadResponse = await fetch(
+          "http://localhost:3000/upload",
+          {
+            method: "POST",
+            body: uploadData
+          }
+        );
+
+        const uploadResult = await uploadResponse.json();
+
+        await fetch(
+          "http://localhost:3000/gallery",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+              event_id: eventId,
+              image: uploadResult.imagePath
+            })
+          }
+        );
+
+      }
+
+      alert("Photos ajoutées avec succès");
+
+      galleryUploadForm.reset();
+
+      loadGalleryPhotos();
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert("Erreur upload galerie");
+
+    }
+
+  });
+
+}
+
+
+
+
+
+async function deleteGalleryPhoto(id) {
+
+  const confirmDelete = confirm(
+    "Supprimer cette photo ?"
+  );
+
+  if (!confirmDelete) return;
+
+  try {
+
+    const response = await fetch(
+      `http://localhost:3000/gallery/${id}`,
+      {
+        method: "DELETE"
+      }
+    );
+
+    if (!response.ok) {
+      alert("Erreur suppression");
+      return;
+    }
+
+    loadGalleryPhotos();
 
   } catch (error) {
 
