@@ -7,6 +7,7 @@ const app = express();
 const eventsRoutes = require("./routes/events");
 const membersRoutes = require("./routes/members");
 const partnersRoutes = require("./routes/partners");
+const authRoutes = require("./routes/auth");
 
 const path = require("path");
 const uploadRoutes = require("./routes/upload");
@@ -18,6 +19,7 @@ app.use("/registrations", registrationsRoutes);
 app.use("/members", membersRoutes);
 app.use("/partners", partnersRoutes);
 app.use("/upload", uploadRoutes);
+app.use("/auth", authRoutes);
 
 app.get("/", (req, res) => {
   res.send("ASAAV API fonctionne");

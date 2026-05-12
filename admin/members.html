@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Membres | Admin ASAAV</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="admin-logo">ASAAV</div>
+
+    <nav>
+      <a href="index.html">Dashboard</a>
+      <a href="events.html">Événements</a>
+      <a href="registrations.html">Inscriptions</a>
+      <a href="members.html" class="active">Membres</a>
+      <a href="partners.html">Partenaires</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="menu-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <h1>Membres</h1>
+    </header>
+
+    <section class="admin-section">
+      <div class="section-header">
+        <div>
+          <h2>Liste des membres</h2>
+          <p>Ajoutez, modifiez, supprimez ou imprimez les membres du club.</p>
+        </div>
+
+        <div class="admin-actions">
+          <button class="admin-primary-btn" id="toggle-member-form">
+            + Ajouter un membre
+          </button>
+
+          <button class="admin-primary-btn" onclick="window.print()">
+            Imprimer
+          </button>
+        </div>
+      </div>
+
+      <div class="admin-form-card hidden" id="member-form-card">
+        <h3 id="member-form-title">Ajouter un membre</h3>
+
+        <form id="create-member-form">
+          <input type="text" id="member-firstname" placeholder="Prénom" required>
+          <input type="text" id="member-lastname" placeholder="Nom" required>
+          <input type="email" id="member-email" placeholder="Email" required>
+          <input type="text" id="member-phone" placeholder="Téléphone">
+
+          <select id="member-type" class="admin-select" required>
+            <option value="">Type de membre</option>
+            <option value="actif">Actif</option>
+            <option value="passif">Passif</option>
+          </select>
+
+          <button type="submit">Ajouter le membre</button>
+        </form>
+      </div>
+
+      <div class="admin-table-wrapper">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Prénom</th>
+              <th>Nom</th>
+              <th>Email</th>
+              <th>Téléphone</th>
+              <th>Type</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody id="admin-members-list">
+            <!-- Membres chargés ici -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

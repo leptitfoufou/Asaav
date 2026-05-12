@@ -1,12 +1,16 @@
 let editingEventId = null;
 let currentEventImage = "";
+let editingRegistrationId = null;
+
 const menuBtn = document.querySelector(".menu-btn");
 const sidebar = document.querySelector(".sidebar");
 
-menuBtn.addEventListener("click", () => {
-  sidebar.classList.toggle("active");
-  menuBtn.classList.toggle("active");
-});
+if (menuBtn && sidebar) {
+  menuBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("active");
+    menuBtn.classList.toggle("active");
+  });
+}
 
 document.addEventListener("click", (e) => {
   const clickInsideSidebar = sidebar.contains(e.target);
@@ -377,9 +381,10 @@ async function loadRegistrations(eventId) {
           <div class="admin-actions">
 
             <button
-              class="admin-edit-btn"
-            >
-              Modifier
+                class="admin-edit-btn"
+                onclick="editRegistration(${registration.id}, ${eventId})"
+              >
+                Modifier
             </button>
 
             <button
@@ -504,8 +509,14 @@ if (createRegistrationForm) {
       phone: document.getElementById("registration-phone").value
     };
 
-    const response = await fetch("http://localhost:3000/registrations", {
-      method: "POST",
+    const url = editingRegistrationId
+  ? `http://localhost:3000/registrations/${editingRegistrationId}`
+  : "http://localhost:3000/registrations";
+
+const method = editingRegistrationId ? "PUT" : "POST";
+
+const response = await fetch(url, {
+  method,
       headers: {
         "Content-Type": "application/json"
       },
@@ -518,10 +529,410 @@ if (createRegistrationForm) {
     }
 
     createRegistrationForm.reset();
+    editingRegistrationId = null;
+
+document.querySelector("#create-registration-form button").textContent =
+  "Ajouter l’inscription";
     registrationFormCard.classList.add("hidden");
     toggleRegistrationFormBtn.textContent = "+ Ajouter une inscription";
 
     loadRegistrations(eventId);
     loadDashboardStats();
+  });
+}
+
+
+
+
+
+
+async function editRegistration(id, eventId) {
+  editingRegistrationId = id;
+
+  const response = await fetch(`http://localhost:3000/registrations/${eventId}`);
+  const registrations = await response.json();
+
+  const registration = registrations.find(item => item.id === id);
+
+  if (!registration) {
+    alert("Inscription introuvable");
+    return;
+  }
+
+  document.getElementById("registration-firstname").value = registration.firstname;
+  document.getElementById("registration-lastname").value = registration.lastname;
+  document.getElementById("registration-email").value = registration.email;
+  document.getElementById("registration-phone").value = registration.phone || "";
+
+  registrationFormCard.classList.remove("hidden");
+  toggleRegistrationFormBtn.textContent = "Fermer";
+
+  document.querySelector("#create-registration-form button").textContent =
+    "Modifier l’inscription";
+}
+
+
+
+
+
+
+
+let editingMemberId = null;
+
+async function loadAdminMembers() {
+  const container = document.getElementById("admin-members-list");
+
+  if (!container) return;
+
+  const response = await fetch("http://localhost:3000/members");
+  const members = await response.json();
+
+  container.innerHTML = members.map(member => `
+    <tr>
+      <td>${member.firstname}</td>
+      <td>${member.lastname}</td>
+      <td>${member.email}</td>
+      <td>${member.phone || "-"}</td>
+      <td>${member.member_type}</td>
+
+      <td>
+        <div class="admin-actions">
+          <button
+            class="admin-edit-btn"
+            onclick="editMember(${member.id})"
+          >
+            Modifier
+          </button>
+
+          <button
+            class="admin-delete-btn"
+            onclick="deleteMember(${member.id})"
+          >
+            Supprimer
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
+}
+
+loadAdminMembers();
+
+const toggleMemberFormBtn = document.getElementById("toggle-member-form");
+const memberFormCard = document.getElementById("member-form-card");
+const createMemberForm = document.getElementById("create-member-form");
+
+if (toggleMemberFormBtn && memberFormCard) {
+  toggleMemberFormBtn.addEventListener("click", () => {
+    memberFormCard.classList.toggle("hidden");
+
+    toggleMemberFormBtn.textContent =
+      memberFormCard.classList.contains("hidden")
+        ? "+ Ajouter un membre"
+        : "Fermer";
+  });
+}
+
+if (createMemberForm) {
+  createMemberForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const memberData = {
+      firstname: document.getElementById("member-firstname").value,
+      lastname: document.getElementById("member-lastname").value,
+      email: document.getElementById("member-email").value,
+      phone: document.getElementById("member-phone").value,
+      member_type: document.getElementById("member-type").value
+    };
+
+    const url = editingMemberId
+      ? `http://localhost:3000/members/${editingMemberId}`
+      : "http://localhost:3000/members";
+
+    const method = editingMemberId ? "PUT" : "POST";
+
+    const response = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(memberData)
+    });
+
+    if (!response.ok) {
+      alert("Erreur lors de l’enregistrement");
+      return;
+    }
+
+    createMemberForm.reset();
+    editingMemberId = null;
+
+    document.getElementById("member-form-title").textContent =
+      "Ajouter un membre";
+
+    document.querySelector("#create-member-form button").textContent =
+      "Ajouter le membre";
+
+    memberFormCard.classList.add("hidden");
+    toggleMemberFormBtn.textContent = "+ Ajouter un membre";
+
+    loadAdminMembers();
+    loadDashboardStats();
+  });
+}
+
+async function editMember(id) {
+  const response = await fetch("http://localhost:3000/members");
+  const members = await response.json();
+
+  const member = members.find(item => item.id === id);
+
+  if (!member) {
+    alert("Membre introuvable");
+    return;
+  }
+
+  editingMemberId = id;
+
+  document.getElementById("member-firstname").value = member.firstname;
+  document.getElementById("member-lastname").value = member.lastname;
+  document.getElementById("member-email").value = member.email;
+  document.getElementById("member-phone").value = member.phone || "";
+  document.getElementById("member-type").value = member.member_type;
+
+  memberFormCard.classList.remove("hidden");
+  toggleMemberFormBtn.textContent = "Fermer";
+
+  document.getElementById("member-form-title").textContent =
+    "Modifier le membre";
+
+  document.querySelector("#create-member-form button").textContent =
+    "Modifier le membre";
+}
+
+async function deleteMember(id) {
+  const confirmDelete = confirm("Supprimer ce membre ?");
+
+  if (!confirmDelete) return;
+
+  const response = await fetch(`http://localhost:3000/members/${id}`, {
+    method: "DELETE"
+  });
+
+  if (!response.ok) {
+    alert("Erreur suppression");
+    return;
+  }
+
+  loadAdminMembers();
+  loadDashboardStats();
+}
+
+
+
+
+
+let editingPartnerId = null;
+let currentPartnerLogo = "";
+
+async function loadAdminPartners() {
+  const container = document.getElementById("admin-partners-list");
+
+  if (!container) return;
+
+  const response = await fetch("http://localhost:3000/partners");
+  const partners = await response.json();
+
+  container.innerHTML = partners.map(partner => `
+    <tr>
+      <td>
+        <img src="../client/${partner.logo || 'images/events/default.jpg'}" alt="${partner.name}">
+      </td>
+
+      <td>${partner.name}</td>
+
+      <td>
+        ${partner.website ? `<a href="${partner.website}" target="_blank">${partner.website}</a>` : "-"}
+      </td>
+
+      <td>
+        <div class="admin-actions">
+          <button class="admin-edit-btn" onclick="editPartner(${partner.id})">
+            Modifier
+          </button>
+
+          <button class="admin-delete-btn" onclick="deletePartner(${partner.id})">
+            Supprimer
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
+}
+
+loadAdminPartners();
+
+const togglePartnerFormBtn = document.getElementById("toggle-partner-form");
+const partnerFormCard = document.getElementById("partner-form-card");
+const createPartnerForm = document.getElementById("create-partner-form");
+
+if (togglePartnerFormBtn && partnerFormCard) {
+  togglePartnerFormBtn.addEventListener("click", () => {
+    partnerFormCard.classList.toggle("hidden");
+
+    togglePartnerFormBtn.textContent =
+      partnerFormCard.classList.contains("hidden")
+        ? "+ Ajouter un partenaire"
+        : "Fermer";
+  });
+}
+
+if (createPartnerForm) {
+  createPartnerForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const imageFile = document.getElementById("partner-image").files[0];
+
+    let logoPath = currentPartnerLogo;
+
+    if (imageFile) {
+      const uploadData = new FormData();
+      uploadData.append("image", imageFile);
+
+      const uploadResponse = await fetch("http://localhost:3000/upload", {
+        method: "POST",
+        body: uploadData
+      });
+
+      const uploadResult = await uploadResponse.json();
+      logoPath = uploadResult.imagePath;
+    }
+
+    const partnerData = {
+      name: document.getElementById("partner-name").value,
+      website: document.getElementById("partner-website").value,
+      logo: logoPath,
+      description: document.getElementById("partner-description").value
+    };
+
+    const url = editingPartnerId
+      ? `http://localhost:3000/partners/${editingPartnerId}`
+      : "http://localhost:3000/partners";
+
+    const method = editingPartnerId ? "PUT" : "POST";
+
+    const response = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(partnerData)
+    });
+
+    if (!response.ok) {
+      alert("Erreur lors de l’enregistrement");
+      return;
+    }
+
+    createPartnerForm.reset();
+    editingPartnerId = null;
+    currentPartnerLogo = "";
+
+    document.getElementById("partner-form-title").textContent =
+      "Ajouter un partenaire";
+
+    document.querySelector("#create-partner-form button").textContent =
+      "Ajouter le partenaire";
+
+    partnerFormCard.classList.add("hidden");
+    togglePartnerFormBtn.textContent = "+ Ajouter un partenaire";
+
+    loadAdminPartners();
+    loadDashboardStats();
+  });
+}
+
+async function editPartner(id) {
+  const response = await fetch("http://localhost:3000/partners");
+  const partners = await response.json();
+
+  const partner = partners.find(item => item.id === id);
+
+  if (!partner) {
+    alert("Partenaire introuvable");
+    return;
+  }
+
+  editingPartnerId = id;
+  currentPartnerLogo = partner.logo || "";
+
+  document.getElementById("partner-name").value = partner.name;
+  document.getElementById("partner-website").value = partner.website || "";
+  document.getElementById("partner-description").value = partner.description || "";
+
+  partnerFormCard.classList.remove("hidden");
+  togglePartnerFormBtn.textContent = "Fermer";
+
+  document.getElementById("partner-form-title").textContent =
+    "Modifier le partenaire";
+
+  document.querySelector("#create-partner-form button").textContent =
+    "Modifier le partenaire";
+}
+
+async function deletePartner(id) {
+  const confirmDelete = confirm("Supprimer ce partenaire ?");
+
+  if (!confirmDelete) return;
+
+  const response = await fetch(`http://localhost:3000/partners/${id}`, {
+    method: "DELETE"
+  });
+
+  if (!response.ok) {
+    alert("Erreur suppression");
+    return;
+  }
+
+  loadAdminPartners();
+  loadDashboardStats();
+}
+
+
+
+
+
+
+
+const loginForm = document.getElementById("login-form");
+
+if (loginForm) {
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const loginData = {
+      email: document.getElementById("login-email").value,
+      password: document.getElementById("login-password").value
+    };
+
+    const response = await fetch("http://localhost:3000/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(loginData)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.error || "Erreur de connexion");
+      return;
+    }
+
+    localStorage.setItem("asaav_admin_token", data.token);
+    localStorage.setItem("asaav_admin_user", JSON.stringify(data.admin));
+
+    window.location.href = "index.html";
   });
 }
