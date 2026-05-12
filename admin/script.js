@@ -1,3 +1,11 @@
+const isLoginPage = window.location.pathname.includes("login.html");
+const token = localStorage.getItem("asaav_admin_token");
+
+if (!isLoginPage && !token) {
+  window.location.href = "login.html";
+}
+
+
 let editingEventId = null;
 let currentEventImage = "";
 let editingRegistrationId = null;
@@ -935,4 +943,205 @@ if (loginForm) {
 
     window.location.href = "index.html";
   });
+}
+
+
+
+const logoutBtn = document.getElementById("logout-btn");
+
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", () => {
+    localStorage.removeItem("asaav_admin_token");
+    localStorage.removeItem("asaav_admin_user");
+    window.location.href = "login.html";
+  });
+}
+
+
+
+
+async function loadAdmins() {
+
+  const container = document.getElementById(
+    "admin-admins-list"
+  );
+
+  if (!container) return;
+
+  try {
+
+    const response = await fetch(
+      "http://localhost:3000/auth/admins"
+    );
+
+    const admins = await response.json();
+
+    container.innerHTML = admins.map(admin => `
+      <tr>
+
+        <td>${admin.firstname}</td>
+
+        <td>${admin.lastname}</td>
+
+        <td>${admin.email}</td>
+
+        <td>${admin.role}</td>
+
+        <td>
+          <div class="admin-actions">
+
+            <button
+              class="admin-delete-btn"
+              onclick="deleteAdmin(${admin.id})"
+            >
+              Supprimer
+            </button>
+
+          </div>
+        </td>
+
+      </tr>
+    `).join("");
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+}
+
+loadAdmins();
+
+
+
+
+
+const toggleAdminFormBtn = document.getElementById(
+  "toggle-admin-form"
+);
+
+const adminFormCard = document.getElementById(
+  "admin-form-card"
+);
+
+const createAdminForm = document.getElementById(
+  "create-admin-form"
+);
+
+if (toggleAdminFormBtn && adminFormCard) {
+
+  toggleAdminFormBtn.addEventListener("click", () => {
+
+    adminFormCard.classList.toggle("hidden");
+
+    toggleAdminFormBtn.textContent =
+      adminFormCard.classList.contains("hidden")
+        ? "+ Ajouter un admin"
+        : "Fermer";
+
+  });
+
+}
+
+
+
+
+
+if (createAdminForm) {
+
+  createAdminForm.addEventListener("submit", async (e) => {
+
+    e.preventDefault();
+
+    const adminData = {
+
+      firstname:
+        document.getElementById("admin-firstname").value,
+
+      lastname:
+        document.getElementById("admin-lastname").value,
+
+      email:
+        document.getElementById("admin-email").value,
+
+      password:
+        document.getElementById("admin-password").value,
+
+      role:
+        document.getElementById("admin-role").value
+
+    };
+
+    try {
+
+      const response = await fetch(
+        "http://localhost:3000/auth/admins",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify(adminData)
+        }
+      );
+
+      if (!response.ok) {
+        alert("Erreur création admin");
+        return;
+      }
+
+      createAdminForm.reset();
+
+      adminFormCard.classList.add("hidden");
+
+      toggleAdminFormBtn.textContent =
+        "+ Ajouter un admin";
+
+      loadAdmins();
+
+    } catch (error) {
+
+      console.error(error);
+
+    }
+
+  });
+
+}
+
+
+
+
+
+async function deleteAdmin(id) {
+
+  const confirmDelete = confirm(
+    "Supprimer cet admin ?"
+  );
+
+  if (!confirmDelete) return;
+
+  try {
+
+    const response = await fetch(
+      `http://localhost:3000/auth/admins/${id}`,
+      {
+        method: "DELETE"
+      }
+    );
+
+    if (!response.ok) {
+      alert("Erreur suppression");
+      return;
+    }
+
+    loadAdmins();
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
 }

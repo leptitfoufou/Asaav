@@ -24,6 +24,18 @@ body {
   padding: 28px;
 }
 
+.logout-btn {
+  margin-left: auto;
+  height: 42px;
+  padding: 0 16px;
+  background: #ffe5e5;
+  color: #c62828;
+  border: none;
+  border-radius: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
 .admin-logo {
   font-size: 28px;
   font-weight: 900;

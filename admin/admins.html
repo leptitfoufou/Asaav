@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Partenaires | Admin ASAAV</title>
+
+  <title>Admins | Admin ASAAV</title>
+
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
   <aside class="sidebar">
@@ -16,39 +19,48 @@
       <a href="events.html">Événements</a>
       <a href="registrations.html">Inscriptions</a>
       <a href="members.html">Membres</a>
-      <a href="partners.html" class="active">Partenaires</a>
-      <a href="admins.html">Admins</a>
-
+      <a href="partners.html">Partenaires</a>
+      <a href="admins.html" class="active">Admins</a>
     </nav>
   </aside>
 
   <main class="main">
+
     <header class="topbar">
+
       <button class="menu-btn">
         <span></span>
         <span></span>
         <span></span>
       </button>
 
-      <h1>Partenaires</h1>
+      <h1>Admins</h1>
+
     </header>
+
+
+
+
 
     <section class="admin-section">
 
       <div class="section-header">
+
         <div>
-          <h2>Gestion des partenaires</h2>
+          <h2>Gestion des admins</h2>
+
           <p>
-            Ajoutez, modifiez ou supprimez les partenaires ASAAV.
+            Gérez les accès administrateurs ASAAV.
           </p>
         </div>
 
         <button
           class="admin-primary-btn"
-          id="toggle-partner-form"
+          id="toggle-admin-form"
         >
-          + Ajouter un partenaire
+          + Ajouter un admin
         </button>
+
       </div>
 
 
@@ -57,41 +69,55 @@
 
       <div
         class="admin-form-card hidden"
-        id="partner-form-card"
+        id="admin-form-card"
       >
 
-        <h3 id="partner-form-title">
-          Ajouter un partenaire
-        </h3>
+        <h3>Ajouter un admin</h3>
 
-        <form id="create-partner-form">
+        <form id="create-admin-form">
 
           <input
             type="text"
-            id="partner-name"
-            placeholder="Nom du partenaire"
+            id="admin-firstname"
+            placeholder="Prénom"
             required
           >
 
           <input
             type="text"
-            id="partner-website"
-            placeholder="Site web"
+            id="admin-lastname"
+            placeholder="Nom"
+            required
           >
 
           <input
-            type="file"
-            id="partner-image"
-            accept="image/*"
+            type="email"
+            id="admin-email"
+            placeholder="Email"
+            required
           >
 
-          <textarea
-            id="partner-description"
-            placeholder="Description"
-          ></textarea>
+          <input
+            type="password"
+            id="admin-password"
+            placeholder="Mot de passe"
+            required
+          >
+
+          <select id="admin-role" class="admin-select">
+
+            <option value="admin">
+              Admin
+            </option>
+
+            <option value="super_admin">
+              Super Admin
+            </option>
+
+          </select>
 
           <button type="submit">
-            Ajouter le partenaire
+            Ajouter l’admin
           </button>
 
         </form>
@@ -108,15 +134,16 @@
 
           <thead>
             <tr>
-              <th>Logo</th>
+              <th>Prénom</th>
               <th>Nom</th>
-              <th>Site web</th>
+              <th>Email</th>
+              <th>Rôle</th>
               <th>Actions</th>
             </tr>
           </thead>
 
-          <tbody id="admin-partners-list">
-            <!-- partenaires -->
+          <tbody id="admin-admins-list">
+            <!-- admins -->
           </tbody>
 
         </table>
@@ -124,6 +151,7 @@
       </div>
 
     </section>
+
   </main>
 
   <script src="script.js"></script>
