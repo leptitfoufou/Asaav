@@ -31,6 +31,9 @@ document.addEventListener("click", (e) => {
 });
 
 async function loadDashboardStats() {
+  const eventsCount = document.getElementById("events-count");
+
+  if (!eventsCount) return;
 
   try {
 
@@ -101,7 +104,7 @@ async function loadAdminEvents() {
     const events = await response.json();
 
     const sortedEvents = events.sort(
-      (a, b) => new Date(a.event_date) - new Date(b.event_date)
+      (a, b) => new Date(b.event_date) - new Date(a.event_date)
     );
 
     container.innerHTML = sortedEvents.map(event => `
@@ -1365,31 +1368,17 @@ if (galleryEventSelect) {
     loadGalleryPhotos(e.target.value);
   });
 }
-loadGalleryPhotos(eventId);
 
 
-
-
-const galleryUploadForm = document.getElementById(
-  "gallery-upload-form"
-);
+const galleryUploadForm = document.getElementById("gallery-upload-form");
 
 if (galleryUploadForm) {
-
   galleryUploadForm.addEventListener("submit", async (e) => {
-
     e.preventDefault();
 
-    const eventId = document.getElementById(
-      "gallery-event-select"
-    ).value;
-
-    const files = document.getElementById(
-      "gallery-images"
-    ).files;
-    const archiveFile = document.getElementById(
-      "gallery-archive"
-    ).files[0];
+    const eventId = document.getElementById("gallery-event-select").value;
+    const files = document.getElementById("gallery-images").files;
+    const archiveFile = document.getElementById("gallery-archive").files[0];
 
     if (!eventId || (files.length === 0 && !archiveFile)) {
       alert("Sélectionnez une sortie et au moins une image ou une archive ZIP.");
@@ -1397,42 +1386,33 @@ if (galleryUploadForm) {
     }
 
     try {
-
       for (const file of files) {
-
         const uploadData = new FormData();
-
         uploadData.append("image", file);
 
-        const uploadResponse = await fetch(
-          "http://localhost:3000/upload",
-          {
-            method: "POST",
-            body: uploadData
-          }
-        );
+        const uploadResponse = await fetch("http://localhost:3000/upload", {
+          method: "POST",
+          body: uploadData
+        });
 
         const uploadResult = await uploadResponse.json();
 
-        await fetch(
-          "http://localhost:3000/gallery",
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-              event_id: eventId,
-              image: uploadResult.imagePath
-            })
-          }
-        );
-
+        await fetch("http://localhost:3000/gallery", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            event_id: eventId,
+            image: uploadResult.imagePath
+          })
+        });
       }
 
       if (archiveFile) {
+
+  console.log("Archive détectée :", archiveFile);
+
   const archiveData = new FormData();
   archiveData.append("image", archiveFile);
 
@@ -1446,38 +1426,34 @@ if (galleryUploadForm) {
 
   const archiveUploadResult = await archiveUploadResponse.json();
 
-  await fetch("http://localhost:3000/gallery/archives", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      event_id: eventId,
-      archive_file: archiveUploadResult.imagePath
-    })
-  });
-}
+  console.log("Archive uploadée :", archiveUploadResult);
 
+  await fetch("http://localhost:3000/gallery/archives", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            event_id: eventId,
+            archive_file: archiveUploadResult.imagePath
+          })
+        });
+      }
 
       alert("Photos / archive ajoutées avec succès");
 
       galleryUploadForm.reset();
 
+      document.getElementById("gallery-event-select").value = eventId;
+
       loadGalleryPhotos(eventId);
 
     } catch (error) {
-
       console.error(error);
-
       alert("Erreur upload galerie");
-
     }
-
   });
-
 }
-
-
 
 
 
@@ -1510,4 +1486,50 @@ async function deleteGalleryPhoto(id) {
     console.error(error);
 
   }
+}
+
+
+
+
+
+
+
+
+
+
+const deleteGalleryPhotosBtn = document.getElementById(
+  "delete-gallery-photos-btn"
+);
+
+if (deleteGalleryPhotosBtn) {
+  deleteGalleryPhotosBtn.addEventListener("click", async () => {
+    const eventId = document.getElementById("gallery-event-select").value;
+
+    if (!eventId) {
+      alert("Sélectionnez d’abord une sortie.");
+      return;
+    }
+
+    const confirmDelete = confirm(
+      "Supprimer toutes les photos de cette sortie ?"
+    );
+
+    if (!confirmDelete) return;
+
+    const response = await fetch(
+      `http://localhost:3000/gallery/archive-photos/${eventId}`,
+      {
+        method: "DELETE"
+      }
+    );
+
+    if (!response.ok) {
+      alert("Erreur lors de la suppression");
+      return;
+    }
+
+    alert("Toutes les photos de cette sortie ont été supprimées.");
+
+    loadGalleryPhotos(eventId);
+  });
 }

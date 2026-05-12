@@ -416,8 +416,11 @@ async function loadGalleryEvents() {
   if (!recentContainer || !archiveContainer) return;
 
   try {
-    const response = await fetch("http://localhost:3000/gallery");
-    const photos = await response.json();
+    const photosResponse = await fetch("http://localhost:3000/gallery");
+    const photos = await photosResponse.json();
+
+    const archivesResponse = await fetch("http://localhost:3000/gallery/archives");
+    const archives = await archivesResponse.json();
 
     const galleries = {};
 
@@ -436,6 +439,20 @@ async function loadGalleryEvents() {
     });
 
     const galleryList = Object.values(galleries);
+      archives.forEach(archive => {
+    if (!galleries[archive.event_id]) {
+      galleryList.push({
+        event_id: archive.event_id,
+        title: archive.title,
+        event_date: archive.event_date,
+        image: null,
+        count: 0,
+        archive_file: archive.archive_file
+      });
+    } else {
+      galleries[archive.event_id].archive_file = archive.archive_file;
+    }
+  });
 
     const today = new Date();
     const twoYearsAgo = new Date();
@@ -468,12 +485,18 @@ async function loadGalleryEvents() {
       <div class="gallery-archive-item">
         <div>
           <h3>${gallery.title}</h3>
-          <p>${gallery.event_date} · ${gallery.count} photo(s)</p>
+          <p>${gallery.event_date}</p>
         </div>
 
-        <a href="gallery-event.html?id=${gallery.event_id}">
-          Voir les photos
-        </a>
+            ${gallery.archive_file ? `
+      <a href="http://localhost:3000/${gallery.archive_file}" download>
+        Télécharger l’archive
+      </a>
+    ` : `
+      <a href="gallery-event.html?id=${gallery.event_id}">
+        Voir les photos
+      </a>
+    `}
       </div>
     `).join("");
 

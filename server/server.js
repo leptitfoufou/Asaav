@@ -12,6 +12,7 @@ const contactRoutes = require("./routes/contact");
 const galleryRoutes = require("./routes/gallery");
 const path = require("path");
 const uploadRoutes = require("./routes/upload");
+const cleanupOldGalleryPhotos = require("./database/cleanupGallery");
 
 app.use(cors());
 app.use(express.json());
@@ -35,6 +36,7 @@ app.use(
     path.join(__dirname, "../client/images")
   )
 );
+cleanupOldGalleryPhotos();
 app.listen(PORT, () => {
   console.log(`Serveur lancé sur le port ${PORT}`);
 });

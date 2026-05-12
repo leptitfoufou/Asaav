@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const fs = require("fs");
+const path = require("path");
 
 const db = require("../database/db");
 
@@ -54,35 +56,8 @@ router.get("/", (req, res) => {
   );
 });
 
-router.get("/:eventId", (req, res) => {
-  const { eventId } = req.params;
 
-  db.all(
-    "SELECT * FROM gallery_photos WHERE event_id = ? ORDER BY created_at DESC",
-    [eventId],
-    (err, rows) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
 
-      res.json(rows);
-    }
-  );
-});
-
-router.delete("/:id", (req, res) => {
-  const { id } = req.params;
-
-  db.run("DELETE FROM gallery_photos WHERE id = ?", [id], function (err) {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-
-    res.json({
-      message: "Photo supprimée"
-    });
-  });
-});
 
 
 
@@ -163,21 +138,77 @@ router.get("/archives/:eventId", (req, res) => {
 router.delete("/archive-photos/:eventId", (req, res) => {
   const { eventId } = req.params;
 
-  db.run(
-    "DELETE FROM gallery_photos WHERE event_id = ?",
+  db.all(
+    "SELECT image FROM gallery_photos WHERE event_id = ?",
     [eventId],
-    function (err) {
+    (err, photos) => {
       if (err) {
         return res.status(500).json({ error: err.message });
       }
 
-      res.json({
-        message: "Photos individuelles supprimées",
-        deleted: this.changes
+      photos.forEach((photo) => {
+        const filePath = path.join(__dirname, "../../client", photo.image);
+
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
       });
+
+      db.run(
+        "DELETE FROM gallery_photos WHERE event_id = ?",
+        [eventId],
+        function (err) {
+          if (err) {
+            return res.status(500).json({ error: err.message });
+          }
+
+          res.json({
+            message: "Photos supprimées de la base et du dossier",
+            deleted: this.changes
+          });
+        }
+      );
     }
   );
 });
+
+
+
+
+
+
+router.get("/:eventId", (req, res) => {
+  const { eventId } = req.params;
+
+  db.all(
+    "SELECT * FROM gallery_photos WHERE event_id = ? ORDER BY created_at DESC",
+    [eventId],
+    (err, rows) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+
+      res.json(rows);
+    }
+  );
+});
+
+router.delete("/:id", (req, res) => {
+  const { id } = req.params;
+
+  db.run("DELETE FROM gallery_photos WHERE id = ?", [id], function (err) {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    res.json({
+      message: "Photo supprimée"
+    });
+  });
+});
+
+
+
 
 
 
