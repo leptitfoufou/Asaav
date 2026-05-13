@@ -67,8 +67,18 @@ async function loadDashboardStats() {
 document.getElementById("events-count").textContent =
   upcomingEvents.length;
 
-    document.getElementById("registrations-count").textContent =
-      registrations.length;
+    const upcomingRegistrations = registrations.filter(registration => {
+  const relatedEvent = events.find(
+    event => event.id === registration.event_id
+  );
+
+  if (!relatedEvent) return false;
+
+  return new Date(relatedEvent.event_date) >= today;
+});
+
+document.getElementById("registrations-count").textContent =
+  upcomingRegistrations.length;
 
     document.getElementById("members-count").textContent =
       members.length;
@@ -611,10 +621,14 @@ async function loadAdminMembers() {
   const response = await fetch("http://localhost:3000/members");
   const members = await response.json();
 
-  container.innerHTML = members.map(member => `
+  container.innerHTML = [...members]
+  .sort((a, b) =>
+    a.lastname.localeCompare(b.lastname)
+  )
+  .map(member => `
     <tr>
-      <td>${member.firstname}</td>
       <td>${member.lastname}</td>
+      <td>${member.firstname}</td>
       <td>${member.email}</td>
       <td>${member.phone || "-"}</td>
       <td>${member.member_type}</td>
@@ -662,8 +676,8 @@ if (createMemberForm) {
     e.preventDefault();
 
     const memberData = {
-      firstname: document.getElementById("member-firstname").value,
       lastname: document.getElementById("member-lastname").value,
+      firstname: document.getElementById("member-firstname").value,
       email: document.getElementById("member-email").value,
       phone: document.getElementById("member-phone").value,
       member_type: document.getElementById("member-type").value
@@ -710,6 +724,13 @@ async function editMember(id) {
   const members = await response.json();
 
   const member = members.find(item => item.id === id);
+
+
+    
+
+  members.sort((a, b) =>
+    a.lastname.localeCompare(b.lastname)
+  );
 
   if (!member) {
     alert("Membre introuvable");
