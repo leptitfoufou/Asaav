@@ -186,11 +186,14 @@ async function deleteEvent(id) {
   try {
 
     const response = await fetch(
-      `http://localhost:3000/events/${id}`,
-      {
-        method: "DELETE"
-      }
-    );
+  `http://localhost:3000/events/${id}`,
+  {
+    method: "DELETE",
+    headers: {
+      "Authorization": `Bearer ${token}`
+    }
+  }
+);
 
     if (!response.ok) {
       alert("Erreur suppression");
@@ -255,10 +258,12 @@ const eventData = {
 
 const method = editingEventId ? "PUT" : "POST";
 
+console.log("TOKEN ENVOYÉ :", token);
 const response = await fetch(url, {
   method,
   headers: {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
   },
   body: JSON.stringify(eventData)
 });

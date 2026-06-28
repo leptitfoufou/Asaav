@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../database/db");
-
+const authMiddleware = require("../middleware/authMiddleware");
 router.get("/", (req, res) => {
   db.all("SELECT * FROM events", [], (err, rows) => {
     if (err) {
@@ -15,7 +15,7 @@ router.get("/", (req, res) => {
 });
 
 
-router.post("/", (req, res) => {
+router.post("/", authMiddleware, (req, res) => {
   const { title, description, event_date, location, image } = req.body;
 
   if (!title || !event_date || !location) {
@@ -54,7 +54,7 @@ router.post("/", (req, res) => {
 
 
 
-router.put("/:id", (req, res) => {
+router.put("/:id", authMiddleware, (req, res) => {
   const { id } = req.params;
   const { title, description, event_date, location, image } = req.body;
 
@@ -100,7 +100,7 @@ router.put("/:id", (req, res) => {
 
 
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", authMiddleware, (req, res) => {
   const { id } = req.params;
 
   db.run("DELETE FROM events WHERE id = ?", [id], function (err) {
